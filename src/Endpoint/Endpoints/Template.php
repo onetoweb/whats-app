@@ -11,11 +11,11 @@ use Onetoweb\WhatsApp\Type;
 class Template extends AbstractEndpoint
 {
     /**
-     * @param $id
+     * @param string $id
      * 
      * @return array|null
      */
-    public function get(int $id): ?array
+    public function get(string $id): ?array
     {
         return $this->client->get($id);
     }

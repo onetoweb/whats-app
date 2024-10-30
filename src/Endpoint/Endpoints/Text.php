@@ -11,12 +11,12 @@ use Onetoweb\WhatsApp\Type;
 class Text extends AbstractEndpoint
 {
     /**
-     * @param int $to
+     * @param string $to
      * @param array $data
      * 
      * @return array|null
      */
-    public function send(int $to, array $data): ?array
+    public function send(string $to, array $data): ?array
     {
         return $this->client->post("/{$this->client->getBusinessId()}/messages", $this->getAbstractBody(Type\Message::TEXT, $to, $data));
     }
