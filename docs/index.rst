@@ -47,7 +47,7 @@ Setup
     });
     
     // (optional) set redirect url, required for the authorization workflow
-    $redirectUrl = 'https://whats-app.nujob.nl/';
+    $redirectUrl = 'https://www.example.com/';
     $client->setRedirectUrl($redirectUrl);
     
     // get request
