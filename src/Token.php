@@ -40,7 +40,6 @@ class Token
      */
     public function isExpired(): bool
     {
-        // return true;
         return (new DateTime()) > $this->expires;
     }
     
