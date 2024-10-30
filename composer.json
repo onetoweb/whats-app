@@ -1,0 +1,31 @@
+{
+    "name": "onetoweb/whats-app",
+    "description": "WhatsApp API Client",
+    "keywords": [
+        "api",
+        "php",
+        "whatsapp"
+    ],
+    "type": "library",
+    "homepage": "https://github.com/onetoweb/whats-app",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jonathan van 't Ende",
+            "email": "jvantende@onetoweb.nl"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "guzzlehttp/guzzle" : "^6.0 || ^7.0",
+        "symfony/http-foundation": "^5.0 || ^6.0 || ^7.0"
+    },
+    "require-dev": {
+        "symfony/error-handler": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Onetoweb\\WhatsApp\\": "src/"
+        }
+    }
+}
