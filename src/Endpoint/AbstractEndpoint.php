@@ -3,6 +3,7 @@
 namespace Onetoweb\WhatsApp\Endpoint;
 
 use Onetoweb\WhatsApp\Client;
+use Onetoweb\WhatsApp\Config\Message;
 
 /**
  * Abstract Endpoint.
@@ -10,32 +11,28 @@ use Onetoweb\WhatsApp\Client;
 abstract class AbstractEndpoint implements EndpointInterface
 {
     /**
-     * @var Client
-     */
-    protected $client;
-    
-    /**
      * @param Client $client
      */
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
+    public function __construct(
+        protected Client $client
+    ) {
+        
     }
     
     /**
-     * @param string $type
+     * @param Message $type
      * @param string $to
      * @param array $data
      * 
      * @return array
      */
-    public static function getAbstractBody(string $type, string $to, array $data): array
+    public static function getAbstractBody(Message $type, string $to, array $data): array
     {
         return [
             'messaging_product' => 'whatsapp',
             'to' => $to,
-            'type' => $type,
-            $type => $data
+            'type' => $type->value,
+            $type->value => $data
         ];
     }
 }

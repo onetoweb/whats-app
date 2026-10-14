@@ -3,7 +3,7 @@
 namespace Onetoweb\WhatsApp\Endpoint\Endpoints;
 
 use Onetoweb\WhatsApp\Endpoint\AbstractEndpoint;
-use Onetoweb\WhatsApp\Type;
+use Onetoweb\WhatsApp\Config\Message;
 
 /**
  * Location Endpoint.
@@ -18,6 +18,6 @@ class Location extends AbstractEndpoint
      */
     public function send(string $to, array $data): ?array
     {
-        return $this->client->post("/{$this->client->getBusinessId()}/messages", $this->getAbstractBody(Type\Message::LOCATION, $to, $data));
+        return $this->client->post("/{$this->client->getBusinessId()}/messages", $this->getAbstractBody(Message::LOCATION, $to, $data));
     }
 }

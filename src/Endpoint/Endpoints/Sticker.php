@@ -3,7 +3,7 @@
 namespace Onetoweb\WhatsApp\Endpoint\Endpoints;
 
 use Onetoweb\WhatsApp\Endpoint\AbstractEndpoint;
-use Onetoweb\WhatsApp\Type;
+use Onetoweb\WhatsApp\Config\Message;
 
 /**
  * Sticker Endpoint.
@@ -18,6 +18,6 @@ class Sticker extends AbstractEndpoint
      */
     public function send(string $to, array $data): ?array
     {
-        return $this->client->post("/{$this->client->getBusinessId()}/messages", $this->getAbstractBody(Type\Message::STICKER, $to, $data));
+        return $this->client->post("/{$this->client->getBusinessId()}/messages", $this->getAbstractBody(Message::STICKER, $to, $data));
     }
 }

@@ -3,7 +3,7 @@
 namespace Onetoweb\WhatsApp\Endpoint\Endpoints;
 
 use Onetoweb\WhatsApp\Endpoint\AbstractEndpoint;
-use Onetoweb\WhatsApp\Type;
+use Onetoweb\WhatsApp\Config\Message;
 
 /**
  * Contact Endpoint.
@@ -18,6 +18,6 @@ class Contact extends AbstractEndpoint
      */
     public function send(string $to, array $data): ?array
     {
-        return $this->client->post("/{$this->client->getBusinessId()}/messages", $this->getAbstractBody(Type\Message::CONTACTS, $to, $data));
+        return $this->client->post("/{$this->client->getBusinessId()}/messages", $this->getAbstractBody(Message::CONTACTS, $to, $data));
     }
 }

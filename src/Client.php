@@ -6,10 +6,12 @@ use Onetoweb\WhatsApp\Endpoint\Endpoints;
 use Onetoweb\WhatsApp\Exception\{SignatureException, TokenException, AuthException};
 use Onetoweb\WhatsApp\Token;
 use Symfony\Component\HttpFoundation\{Request, Response};
+use Onetoweb\WhatsApp\Config\Method;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Client as GuzzleCLient;
 use GuzzleHttp\Psr7\Utils;
 use DateTime;
+use Closure;
 
 /**
  * WhatsApp Api Client.
@@ -25,12 +27,6 @@ class Client
     public const DIALOG_URL = 'https://www.facebook.com/%s/dialog/oauth';
     
     /**
-     * Methods.
-     */
-    public const METHOD_POST = 'POST';
-    public const METHOD_GET = 'GET';
-    
-    /**
      * Graph Version.
      */
     public const GRAPH_VERSION = '21.0';
@@ -38,37 +34,17 @@ class Client
     /**
      * @var string
      */
-    private $appId;
-    
-    /**
-     * @var string
-     */
-    private $appSecret;
-    
-    /**
-     * @var string
-     */
-    private $businessId;
-    
-    /**
-     * @var string
-     */
-    private $verifyToken;
-    
-    /**
-     * @var string
-     */
-    private $graphVersion;
-    
-    /**
-     * @var string
-     */
-    private $redirectUrl;
+    private ?string $redirectUrl = null;
     
     /**
      * @var Token
      */
-    private $token;
+    private ?Token $token = null;
+    
+    /**
+     * @var Closure
+     */
+    private ?Closure $tokenUpdateCallback = null;
     
     /**
      * @param string $appId
@@ -78,18 +54,21 @@ class Client
      * @param string $graphVersion = self::GRAPH_VERSION
      */
     public function __construct(
-        string $appId,
-        string $apiSecret,
-        string $businessId,
-        string $verifyToken = null,
-        string $graphVersion = self::GRAPH_VERSION
-    ) {
-        $this->appId = $appId;
-        $this->apiSecret = $apiSecret;
-        $this->businessId = $businessId;
-        $this->verifyToken = $verifyToken;
-        $this->graphVersion = $graphVersion;
         
+        #[\SensitiveParameter]
+        private string $appId,
+        
+        #[\SensitiveParameter]
+        private string $apiSecret,
+        
+        #[\SensitiveParameter]
+        private string $businessId,
+        
+        #[\SensitiveParameter]
+        private ?string $verifyToken = null,
+        
+        private string $graphVersion = self::GRAPH_VERSION
+    ) {
         // load endpoints
         $this->loadEndpoints();
     }
@@ -131,11 +110,11 @@ class Client
     }
     
     /**
-     * @param callable $tokenUpdateCallback
+     * @param Closure $tokenUpdateCallback
      * 
      * @return void
      */
-    public function setTokenUpdateCallback(callable $tokenUpdateCallback): void
+    public function setTokenUpdateCallback(Closure $tokenUpdateCallback): void
     {
         $this->tokenUpdateCallback = $tokenUpdateCallback;
     }
@@ -168,11 +147,11 @@ class Client
     
     /**
      * @param string $redirectUri
-     * @param string $state = null
+     * @param ?string $state = null
      * 
      * @return string
      */
-    public function getAuthorizationUrl(string $redirectUri, string $state = null): string
+    public function getAuthorizationUrl(string $redirectUri, ?string $state = null): string
     {
         return sprintf(self::DIALOG_URL, $this->getGraphVersion()).'?'.http_build_query([
             'client_id' => $this->appId,
@@ -380,7 +359,7 @@ class Client
      */
     public function post(string $endpoint, array $data = []): array
     {
-        return $this->request(self::METHOD_POST, $endpoint, $data);
+        return $this->request(Method::POST, $endpoint, $data);
     }
     
     /**
@@ -391,7 +370,7 @@ class Client
      */
     public function get(string $endpoint, array $query = []): array
     {
-        return $this->request(self::METHOD_GET, $endpoint, [], $query);
+        return $this->request(Method::GET, $endpoint, [], $query);
     }
     
     /**
@@ -402,11 +381,11 @@ class Client
      */
     public function upload(string $endpoint, string $filepath): array
     {
-        return $this->request(self::METHOD_POST, $endpoint, [], [], $filepath);
+        return $this->request(Method::POST, $endpoint, [], [], $filepath);
     }
     
     /**
-     * @param string $method
+     * @param Method $method
      * @param string $endpoint
      * @param array $data = []
      * @param array $query = []
@@ -414,7 +393,7 @@ class Client
      * 
      * @return array
      */
-    public function request(string $method, string $endpoint, array $data = [], array $query = [], string $filepath = null): array
+    public function request(Method $method, string $endpoint, array $data = [], array $query = [], string $filepath = null): array
     {
         if ($this->token === null) {
             throw new AuthException('you must provide a token with '.self::class.'::setToken, or you can request a token via the authorization workflow');
@@ -456,7 +435,7 @@ class Client
         }
         
         // make request
-        $response = (new GuzzleCLient())->request($method, $this->getUrl($endpoint), $options);
+        $response = (new GuzzleCLient())->request($method->value, $this->getUrl($endpoint), $options);
         
         // decode json
         $json = json_decode($response->getBody()->getContents(), true);

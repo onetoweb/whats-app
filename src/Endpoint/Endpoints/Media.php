@@ -3,7 +3,6 @@
 namespace Onetoweb\WhatsApp\Endpoint\Endpoints;
 
 use Onetoweb\WhatsApp\Endpoint\AbstractEndpoint;
-use Onetoweb\WhatsApp\Type;
 
 /**
  * Media Endpoint.

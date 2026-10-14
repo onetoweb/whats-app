@@ -3,20 +3,32 @@
 namespace Onetoweb\WhatsApp;
 
 use DateTime;
+use Stringable;
 
 /**
  * Token.
  */
-class Token
+class Token implements Stringable
 {
     /**
      * @param string $value
      * @param DateTime $expires
      */
-    public function __construct(string $value, DateTime $expires)
+    public function __construct(
+        
+        #[\SensitiveParameter]
+        private string $value,
+        private DateTime $expires
+    ) {
+        
+    }
+    
+    /**
+     * @return string
+     */
+    public function __toString(): string
     {
-        $this->value = $value;
-        $this->expires = $expires;
+        return $this->getValue();
     }
     
     /**
@@ -41,13 +53,5 @@ class Token
     public function isExpired(): bool
     {
         return (new DateTime()) > $this->expires;
-    }
-    
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return $this->getValue();
     }
 }

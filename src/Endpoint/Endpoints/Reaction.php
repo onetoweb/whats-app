@@ -3,7 +3,7 @@
 namespace Onetoweb\WhatsApp\Endpoint\Endpoints;
 
 use Onetoweb\WhatsApp\Endpoint\AbstractEndpoint;
-use Onetoweb\WhatsApp\Type;
+use Onetoweb\WhatsApp\Config\Message;
 
 /**
  * Reaction Endpoint.
@@ -19,7 +19,7 @@ class Reaction extends AbstractEndpoint
      */
     public function send(string $to, string $messageId, string $emoji): ?array
     {
-        return $this->client->post("/{$this->client->getBusinessId()}/messages", $this->getAbstractBody(Type\Message::REACTION, $to, [
+        return $this->client->post("/{$this->client->getBusinessId()}/messages", $this->getAbstractBody(Message::REACTION, $to, [
             'message_id' => $messageId,
             'emoji' => $emoji
         ]));
